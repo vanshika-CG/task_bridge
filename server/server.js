@@ -9,7 +9,7 @@ const port = 4400;
 
 
 // MongoDB connection details
-const uri = process.env.URI; 
+const uri = process.env.URI; // access uri from .env
 const dbName = "taskbridge";
 
 // Middleware
