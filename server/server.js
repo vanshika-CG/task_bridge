@@ -2,11 +2,14 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const app = express();
+const  dotenv = require("dotenv"); 
+       dotenv.config();
 const port = 4400;
 
 
+
 // MongoDB connection details
-const uri = "mongodb+srv://priymavanicg:taskbridge@task.mstx5.mongodb.net/"; 
+const uri = process.env.URI; 
 const dbName = "taskbridge";
 
 // Middleware
