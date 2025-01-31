@@ -1,0 +1,72 @@
+const bcrypt = require('bcryptjs');
+const User = require('../models/userModel');
+
+// Signup for admin
+exports.signup = async (req, res) => {
+    const { team_code, full_name, title, email, role, password } = req.body;
+
+    if (!team_code || !full_name || !email || !role || !password) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (password.length < 6) {
+        return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ $and: [{ email }, { team_code },{role}] });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists with this email' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({
+            team_code,
+            full_name,
+            title,
+            email,
+            role,
+            password: hashedPassword,
+        });
+
+        // Save the user to the database
+        await newUser.save();
+
+        return res.status(201).json({ message: 'User registered successfully' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error in signup' });
+    }
+};
+
+
+// Login for admin and member
+exports.login = async (req, res) => {
+    const { email, team_code, password, role } = req.body;
+
+    if (!email || !team_code || !password || !role) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+   
+        const user = await User.findOne({ $and: [{ email }, { team_code }, { role }] });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        return res.status(200).json({ message: 'Login successful', user });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
