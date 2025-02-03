@@ -1,0 +1,173 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import '../style/Login.css';
+import logo from '../assets/logo.png';
+import meeting_img from '../assets/login/login_i.png'; // Add your meeting image
+
+
+const Login = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        team_code: '',
+        password: '',
+        role: '',
+    });
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('https://task-bridge-eyh5.onrender.com/auth/login', formData);
+            setMessage(response.data.message);
+            navigate(`/team/${formData.team_code}`);
+        } catch (error) {
+            setMessage(error.response?.data?.message || 'Error during login');
+        }
+    };
+
+    return (
+        <div className="login-container">
+            <div className="login-left">
+                <div className="logo-container">
+                    <img src={logo} alt="Task Bridge Logo" className="logo" />
+                </div>
+                
+                <div className="login-content">
+                    <h3>Continue with journey...</h3>
+                    <h1>Login to Your Account</h1>
+                    
+                    <div className="role-section">
+                        <h4>Role</h4>
+                        <div className="radio-group">
+                            <div className="radio-container">
+                                <input 
+                                    type="radio" 
+                                    id="admin" 
+                                    name="role" 
+                                    value="Admin"
+                                    checked={formData.role === 'Admin'}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="admin">Admin</label>
+                            </div>
+                            <div className="radio-container">
+                                <input 
+                                    type="radio" 
+                                    id="member" 
+                                    name="role" 
+                                    value="Member"
+                                    checked={formData.role === 'Member'}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="member">Member</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                name="team_code"
+                                placeholder="Team Code Ex-tema@321"
+                                value={formData.team_code}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                            <span className="icon">✉️</span>
+                        </div>
+
+                        <div className="input-group">
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <span className="icon">👁️</span>
+                        </div>
+
+                        <button type="submit" className="login-button">
+                            Log - In
+                        </button>
+                    </form>
+
+                    {message && <div className="message">{message}</div>}
+                </div>
+            </div>
+            
+            <div className="login-right">
+                <img src={meeting_img} alt="Team Meeting" />
+            </div>
+        </div>
+    );
+};
+
+export default Login;
+
+
+
+// import React, { useState } from 'react';
+// import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
+
+// const Login = () => {
+//   const [formData, setFormData] = useState({
+//     email: '',
+//     team_code: '',
+//     password: '',
+//     role: '',
+//   });
+//   const [message, setMessage] = useState('');
+//   const navigate = useNavigate();
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const response = await axios.post('https://task-bridge-eyh5.onrender.com/auth/login', formData);
+//       setMessage(response.data.message);
+//       navigate(`/team/${formData.team_code}`); // Redirect to team page after login
+//     } catch (error) {
+//       setMessage(error.response?.data?.message || 'Error during login');
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h2>Login</h2>
+//       <form onSubmit={handleSubmit}>
+//         <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+//         <input type="text" name="team_code" placeholder="Team Code" onChange={handleChange} required />
+//         <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+//         <input type="text" name="role" placeholder="Role" onChange={handleChange} required />
+//         <button type="submit">Login</button>
+//       </form>
+//       {message && <p>{message}</p>}
+//     </div>
+//   );
+// };
+
+// export default Login;
