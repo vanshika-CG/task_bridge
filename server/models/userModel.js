@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     team_code: { type: String, required: true },
@@ -8,6 +9,19 @@ const userSchema = new mongoose.Schema({
     role:{ type: String, required: true },
     password: { type: String, required: true }
 });
+
+// Add method to generate JWT token
+userSchema.methods.generateAuthToken = function() {
+    return jwt.sign(
+        { 
+            _id: this._id,
+            role: this.role,
+            email: this.email 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '5d' }  // Token expires in 5 days
+    );
+};
 
 const User = mongoose.model('User', userSchema);
 
