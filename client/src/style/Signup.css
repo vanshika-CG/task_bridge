@@ -1,0 +1,126 @@
+.signup-container {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(to right, #B8C6FF 50%, #FFE5E5 50%);
+}
+
+.signup-left {
+    flex: 1;
+    padding: 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.signup-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.signup-right img {
+    max-width: 100%;
+    height: auto;
+}
+
+.logo-container {
+    margin-bottom: 2rem;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+}
+
+.signup-content h3 {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.signup-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #000;
+}
+
+.role-section {
+    margin-bottom: 2rem;
+}
+
+.role-section h4 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    width: 83%;
+    padding: 1rem;
+    padding-right: 2.5rem;
+    border: none;
+    border-radius: 25px;
+    background: white;
+    font-size: 1rem;
+}
+
+.input-group .icon {
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.signup-button {
+    width: fit-content;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: 25px;
+    background: white;
+    color: #000;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.signup-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Focus states */
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(184, 198, 255, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .signup-container {
+        flex-direction: column;
+    }
+    
+    .signup-left {
+        padding: 2rem;
+    }
+    
+    .signup-right {
+        display: none;
+    }
+}
