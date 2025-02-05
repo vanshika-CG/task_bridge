@@ -23,6 +23,9 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import Home from './components/Home';
 import TeamMembers from './components/TeamMembers';
+import MainHome from './components/MainHome';
+import DocumentSharing from './components/DocumentSharing';
+import AddMember from './components/test';
 
 import './App.css';
 
@@ -31,16 +34,25 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Route for MainHome (new dashboard) */}
+          <Route path="/home" element={<MainHome />} />
+
           {/* Route for Signup */}
           <Route path="/signup" element={<Signup />} />
 
           {/* Route for Login */}
           <Route path="/login" element={<Login />} />
 
+          {/* Route for Add Member */}
+          <Route path="/add" element={<AddMember />} />
+
           {/* Route for Team Members */}
           <Route path="/team/:team_code" element={<TeamMembers />} />
 
-          {/* Default Route (Redirect to Login) */}
+          {/* Route for Document Sharing */}
+          <Route path="/documents" element={<DocumentSharing />} />
+
+          {/* Default Route (Landing Page) */}
           <Route path="/" element={<Home />} />
         </Routes>
       </div>

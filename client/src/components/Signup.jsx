@@ -11,7 +11,7 @@ const Signup = () => {
         full_name: '',
         title: '',
         email: '',
-        role: 'Admin', // Default role
+        role: 'admin', // Default role
         password: '',
     });
     const [message, setMessage] = useState('');
@@ -68,7 +68,7 @@ const Signup = () => {
                                 onChange={handleChange}
                                 required
                             />
-                            <span className="icon">👤</span>
+                            <span className="icon"></span>
                         </div>
 
                         <div className="input-group">
@@ -80,7 +80,7 @@ const Signup = () => {
                                 onChange={handleChange}
                                 required
                             />
-                            <span className="icon">✉️</span>
+                            <span className="icon"></span>
                         </div>
 
                         <div className="input-group">
@@ -92,7 +92,7 @@ const Signup = () => {
                                 onChange={handleChange}
                                 required
                             />
-                            <span className="icon">👁️</span>
+                            <span className="icon"></span>
                         </div>
 
                         <div className="input-group">
