@@ -19,7 +19,6 @@ exports.getTeamMembers = async (req, res) => {
 
 // Add User (Member)
 exports.addUser = async (req, res) => {
-
     const { team_code, full_name, title, email, role, password } = req.body;
 
     if (!team_code || !full_name || !email || !role || !password) {
@@ -53,10 +52,13 @@ exports.addUser = async (req, res) => {
 
         return res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal server error in adding new user' });
+        console.error('Detailed error:', err);
+        return res.status(500).json({ 
+            message: 'Internal server error in adding new user',
+            error: err.message,
+            details: err.errors // This will include validation errors if any
+        });
     }
-
 };
 
 // Edit User (Member)
@@ -77,8 +79,7 @@ exports.deleteUser = async (req, res) => {
     try {
         let { full_name, team_code } = req.params;
 
-        console.log(`Deleting user: "${full_name}", Team: "${team_code}"`);
-
+        console.log(`Deleting user: ${full_name}, Team: ${team_code}`);
         const result = await User.deleteOne({ full_name, team_code });
 
         if (result.deletedCount === 0) {
