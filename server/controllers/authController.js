@@ -37,7 +37,7 @@ exports.signup = async (req, res) => {
         return res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: 'Internal server error in signup' });
+        return res.status(500).json({ message: 'Internal server error in signup'});
     }
 };
 
@@ -51,8 +51,14 @@ exports.login = async (req, res) => {
     }
 
     try {
-   
-        const user = await User.findOne({ $and: [{ email }, { team_code }, { role }] });
+        // Convert role to lowercase for case-insensitive comparison
+        const user = await User.findOne({ 
+            $and: [
+                { email: email.toLowerCase() }, 
+                { team_code }, 
+                { role: role.toLowerCase() }  // Convert role to lowercase
+            ] 
+        });
 
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
