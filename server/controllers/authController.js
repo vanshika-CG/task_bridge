@@ -72,6 +72,7 @@ exports.login = async (req, res) => {
 
         const token = user.generateAuthToken();
         res.json({ token, user: { 
+            team_code: user.team_code,
             email: user.email, 
             role: user.role,
             full_name: user.full_name 
