@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../style/Signup.css';
 import home_i from '../assets/home_i.png';
-import logo from '../assets/logo.png';
+import logo from '../assets/Logo.png';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
