@@ -64,7 +64,7 @@ const MainHome = () => {
             <span>Home</span>
           </div>
 
-          <Link to="/team/:team_code" className="nav-link">
+          <Link to="/team" className="nav-link">
             <span>👥</span>
             <span>Team</span>
           </Link>
