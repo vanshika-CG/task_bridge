@@ -1,18 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/Home.css';
-
-
 import home_i from '../assets/home_i.png'
 import logo from '../assets/Logo.png'
+
+console.log(sessionStorage.getItem("team_code"));
 const Home = () => {
     const navigate = useNavigate();
     
+
     return (
         <div className="Home">
             <div className="part1">
                 <div className="logo">
-                    <img src={logo} alt="Task Bridge Logo" />
+                    {/* <img src={logo} alt="Task Bridge Logo" /> */}
                 </div>
                 <h1>Welcome to Task Bridge</h1>
                 <h2>A Platform for task management and team<br />to work together</h2>

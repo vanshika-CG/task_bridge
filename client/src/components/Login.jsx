@@ -6,6 +6,7 @@ import logo from '../assets/logo.png';
 import meeting_img from '../assets/login/login_i.png'; // Add your meeting image
 
 
+
 const Login = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -23,9 +24,18 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:4400/auth/login', formData);
+            const response = await axios.post('https://task-bridge-eyh5.onrender.com/auth/login', formData);
+            sessionStorage.setItem('token', response.data.token);
+            console.log(response.data.token);
+            sessionStorage.setItem('user_email', JSON.stringify(response.data.user.email));
+            console.log(response.data.user.email);
+            sessionStorage.setItem('role', JSON.stringify(response.data.user.role));
+            sessionStorage.setItem('team_code', JSON.stringify(response.data.user.team_code));
+
+
             setMessage(response.data.message);
-            navigate(`/team/${formData.team_code}`);
+            // navigate(`/team/${formData.team_code}`);
+            navigate(`/home`);
         } catch (error) {
             setMessage(error.response?.data?.message || 'Error during login');
         }

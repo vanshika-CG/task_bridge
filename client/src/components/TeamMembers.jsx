@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../style/TeamMembers.css';
 import profile from '../assets/home_/profile_i.png'; 
 
 const TeamMembers = () => {
-  const { team_code } = useParams();
+  // const { team_code } = useParams();
+  const team_code = sessionStorage.getItem('team_code')?.replace(/['"]+/g, '');
+  const token = sessionStorage.getItem('token');
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]); // Ensure it's an array
   const [message, setMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
@@ -24,19 +27,36 @@ const TeamMembers = () => {
   // Fetch team members
   useEffect(() => {
     const fetchMembers = async () => {
+      if (!team_code) {
+        setError('No team code found');
+        return;
+      }
+
       try {
-        const response = await axios.get(`https://task-bridge-eyh5.onrender.com/team/${team_code}`);
+        const response = await axios.get(
+          `https://task-bridge-eyh5.onrender.com/team/${team_code}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
         if (Array.isArray(response.data)) {
           setMembers(response.data);
+          setError(null);
         } else {
-          setMembers([]); // Ensure an array
+          setMembers([]);
+          setError('No team members found');
         }
       } catch (error) {
         console.error('Error fetching team members:', error);
         setMessage(error.response?.data?.message || 'Error fetching team members');
-        setMembers([]); // Avoid undefined errors
+        setMembers([]);
       }
     };
+
     fetchMembers();
   }, [team_code]);
 
@@ -189,6 +209,9 @@ const TeamMembers = () => {
   return (
     <div className="container">
       <div className="header">
+        <button className="home-btn" onClick={() => navigate('/home')}>
+          Home
+        </button>
         <h2>Team Members</h2>
         <button className="add-user-btn" onClick={() => setIsAddModalOpen(true)}>
           Add Member
