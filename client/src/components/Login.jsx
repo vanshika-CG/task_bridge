@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../style/Login.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/Logo.png';
 import meeting_img from '../assets/login/login_i.png'; // Add your meeting image
 
 
