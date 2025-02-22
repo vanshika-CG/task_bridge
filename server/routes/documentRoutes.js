@@ -2,7 +2,7 @@ const express = require('express');
 const documentRouter = express.Router();
 const documentController = require('../controllers/documentController');
 const folderController = require('../controllers/folderController');
-const auth = require('../middleware/authMiddleware');
+const auth = require('../middleware/auth');
 const upload = require('../middleware/multer');
 
 // Validation middleware
