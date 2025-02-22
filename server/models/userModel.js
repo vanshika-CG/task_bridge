@@ -19,7 +19,7 @@ userSchema.methods.generateAuthToken = function() {
             email: this.email 
         },
         process.env.JWT_SECRET,
-        { expiresIn: '5d' }  // Token expires in 5 days
+        { expiresIn: '10d' }  // Token expires in 10 days
     );
 };
 
