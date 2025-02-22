@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -6,6 +5,8 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const documentRoutes = require('./routes/documentRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+
 
 dotenv.config(); // Load environment variables
 
@@ -36,7 +37,7 @@ mongoose.connect(mongoURI, {
 app.use('/auth', authRoutes);
 app.use('/team', teamRoutes);
 app.use('/file', documentRoutes);
-
+app.use('/task', taskRoutes);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
