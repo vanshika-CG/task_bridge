@@ -1,4 +1,4 @@
-const Task = require('../models/TaskModel');
+const Task = require('../models/taskModel');
 
 const taskController = {
   // Get all tasks for a team
