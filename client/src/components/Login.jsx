@@ -24,13 +24,16 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('https://task-bridge-eyh5.onrender.com/auth/login', formData);
+            const response = await axios.post('http://localhost:4400/auth/login', formData);
             sessionStorage.setItem('token', response.data.token);
             console.log(response.data.token);
             sessionStorage.setItem('user_email', JSON.stringify(response.data.user.email));
+            sessionStorage.setItem('user', JSON.stringify(response.data.user)); // Store full user object
+            console.log(response.data.user.full_name)
             console.log(response.data.user.email);
             sessionStorage.setItem('role', JSON.stringify(response.data.user.role));
             sessionStorage.setItem('team_code', JSON.stringify(response.data.user.team_code));
+            sessionStorage.setItem('userId', JSON.stringify(response.data.user.userID));
 
 
             setMessage(response.data.message);
