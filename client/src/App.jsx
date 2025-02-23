@@ -10,6 +10,8 @@ import Document from './components/Document';
 
 
 import './App.css';
+import Task from './components/Task';
+import Chat from './components/Chat';
 
 function App() {
   return (
@@ -28,8 +30,14 @@ function App() {
           {/* Route for Team Members */}
           <Route path="/team" element={<TeamMembers />} />
 
+          {/* Route for Chat Messanger */}
+          <Route path="/chat" element={<Chat />} />
+
           {/* Route for Document Sharing */}
           <Route path="/documents" element={<Document />} />
+
+          {/* Route for task Managment */}
+          <Route path="/task" element={<Task />} />
 
           {/* Default Route (Landing Page) */}
           <Route path="/" element={<Home />} />

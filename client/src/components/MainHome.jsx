@@ -10,7 +10,7 @@ const MainHome = () => {
       id: 1,
       title: "Task Management",
       icon: "📊",
-      path: "/tasks",
+      path: "/task",
       className: "yellow"
     },
     {
@@ -38,7 +38,7 @@ const MainHome = () => {
       id: 5,
       title: "Messaging",
       icon: "💬",
-      path: "/messages",
+      path: "/chat",
       className: "purple"
     },
     {
