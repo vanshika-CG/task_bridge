@@ -131,9 +131,9 @@ const taskController = {
   addComment: async (req, res) => {
     try {
       const { id } = req.params;
-      const { text } = req.body;
+      const { text , activity , type } = req.body;
       
-      if (!text) {
+      if (!activity && !type ) {
         return res.status(400).json({ message: 'Comment text is required' });
       }
 
@@ -158,8 +158,8 @@ const taskController = {
               createdAt: new Date()
             },
             activities: {
-              type: 'commented',
-              activity: 'Added a comment',
+              type ,
+              activity,
               by: req.user._id,
               date: new Date()
             }
