@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Pattern from '../Ui/Pattern'; 
 import '../style/MainHome.css';
 import logo from '../assets/Logo.png';
 import profile from '../assets/home_/profile_i.png';
 
 const MainHome = () => {
+  const name = sessionStorage.getItem("full_name");
+  console.log(name);
+
   const menuItems = [
     {
       id: 1,
@@ -52,10 +56,14 @@ const MainHome = () => {
 
   return (
     <div className="main-container">
+      {/* Add the Pattern component as the background */}
+      <Pattern />
+
       {/* Navbar */}
       <nav className="navbar">
+        
         <div className="logo-container">
-          <img src={logo} alt="Task Bridge" className="logo" />
+          <img src={logo} alt="Task Bridge" className="logo11" />
         </div>
 
         <div className="nav-items">
@@ -64,15 +72,30 @@ const MainHome = () => {
             <span>Home</span>
           </div>
 
+          <Link to="/contact" className="nav-link">
+            <span></span>
+            <span>Contact Us</span>
+          </Link>
+
+          <Link to="/about" className="nav-link">
+            <span></span>
+            <span>About Us</span>
+          </Link>
+          
+          <Link to="/faq" className="nav-link">
+            <span></span>
+            <span>FAQ</span>
+          </Link>
+            
           <Link to="/team" className="nav-link">
             <span>👥</span>
             <span>Team</span>
           </Link>
-            
-          <div className="profile-link">
-            <img src={profile} alt="Profile" className="profile-image" />
-            <span>Priy Mavani</span>
-          </div>
+
+          <Link to="/profile" className="profile-link">
+            <img src={profile} alt="Profile" className="profile-image1" />
+            <span>{name}</span>
+          </Link>
         </div>
       </nav>
 
@@ -82,13 +105,13 @@ const MainHome = () => {
           {/* Left Side - Logo and Illustration */}
           <div className="logo-section">
             <div className="main-logo">
-              <h1>
+              <h1 className="animated-title">
                 Task<br/>Bridge
               </h1>
             </div>
-            <div className="illustration-container">
+            {/* <div className="illustration-container">
               <img src="/illustration.png" alt="Background" />
-            </div>
+            </div> */}
           </div>
 
           {/* Right Side - Menu Items */}
@@ -114,4 +137,4 @@ const MainHome = () => {
   );
 };
 
-export default MainHome; 
+export default MainHome;
