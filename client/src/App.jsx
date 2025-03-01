@@ -12,6 +12,12 @@ import Document from './components/Document';
 import './App.css';
 import Task from './components/Task';
 import Chat from './components/Chat';
+import Calendar from './components/Calendar';
+import Profile from './components/Profile';
+import Whiteboard from './components/Whiteboard';
+import About from './components/About';
+import Contact from './components/Contact';
+import Faq from './components/Faq';
 
 function App() {
   return (
@@ -35,6 +41,24 @@ function App() {
 
           {/* Route for Document Sharing */}
           <Route path="/documents" element={<Document />} />
+          
+          {/* Route for Calendar */}
+          <Route path="/calendar" element={<Calendar />} />
+
+          {/* Route for Profile */}
+          <Route path="/profile" element={<Profile />} />
+
+          {/* Route for Virtula Whiteboard */}
+          <Route path="/whiteboard" element={<Whiteboard/>} />
+
+          {/* Route for About */}
+          <Route path="/about" element={<About/>} />
+
+          {/* Route for Contact */}
+          <Route path="/contact" element={<Contact/>} />
+
+          {/* Route for FAQ section */}
+          <Route path="/faq" element={<Faq/>} />
 
           {/* Route for task Managment */}
           <Route path="/task" element={<Task />} />

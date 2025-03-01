@@ -1,0 +1,117 @@
+/* General Styling */
+.faq-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .faq-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0d47a1; /* Dark Blue */
+    margin-bottom: 30px;
+    text-transform: uppercase;
+  }
+  
+  /* FAQ Sections */
+  .faq-section {
+    margin-bottom: 40px;
+  }
+  
+  .faq-category {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1565c0; /* Medium Blue */
+    padding: 10px 15px;
+    background: rgba(13, 71, 161, 0.1);
+    border-left: 5px solid #0d47a1; /* Dark Blue */
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  /* FAQ Item */
+  .faq-item {
+    background: #f5faff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #bbdefb;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .faq-item:hover {
+    background: #e3f2fd; /* Lighter Blue */
+    transform: translateY(-2px);
+  }
+  
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #0d47a1; /* Dark Blue */
+    transition: color 0.3s;
+  }
+  
+  .faq-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0d47a1; /* Dark Blue */
+  }
+  
+  /* FAQ Answer */
+  .faq-answer {
+    font-size: 1rem;
+    color: #333;
+    background: rgba(13, 71, 161, 0.05);
+    border-left: 3px solid #0d47a1;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    line-height: 1.6;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .faq-container {
+      padding: 15px;
+    }
+  
+    .faq-title {
+      font-size: 2rem;
+    }
+  
+    .faq-category {
+      font-size: 1.5rem;
+    }
+  
+    .faq-question {
+      font-size: 1.1rem;
+    }
+  
+    .faq-answer {
+      font-size: 0.95rem;
+    }
+  }
+  
+  .home-faq-button {
+    text-decoration: none;
+    background: #0d47a1;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .home-faq-button:hover {
+    background: #1565c0;
+  }
