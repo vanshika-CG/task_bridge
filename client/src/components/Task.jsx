@@ -1,13 +1,16 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../style/task.css";
+import { Link } from 'react-router-dom';
+import TeamLoader from "../Ui/Enter";
+import { ToastContainer, toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 
 const Task = () => {
     const [tasks, setTasks] = useState([]);
     const [selectedCommitType, setSelectedCommitType] = useState({});
     const [commentText, setCommentText] = useState({});
-    const [expandedTask, setExpandedTask] = useState(null); // For showing task details
+    const [expandedTask, setExpandedTask] = useState(null);
     const [newTask, setNewTask] = useState({ 
         title: "", description: "", priority: "normal", label: "", assignedMembers: [], date: "" 
     });
@@ -15,43 +18,46 @@ const Task = () => {
     const [loading, setLoading] = useState(false);
 
     const token = sessionStorage.getItem("token");
-    const teamCode = JSON.parse(sessionStorage.getItem("team_code"));
+    const teamCode = (sessionStorage.getItem("team_code"));
     const userRole = JSON.parse(sessionStorage.getItem("role"));
-    const user = JSON.parse(sessionStorage.getItem("user")); // Get logged-in user details
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     useEffect(() => {
         fetchTasks();
         fetchTeamMembers();
     }, []);
 
-    // Fetch all tasks for the team
     const fetchTasks = async () => {
+        setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4400/task/${teamCode}`, {
+            const response = await axios.get(`https://task-bridge-eyh5.onrender.com/task/${teamCode}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setTasks(response.data);
         } catch (error) {
             console.error("Error fetching tasks:", error);
+            toast.error("Failed to fetch tasks. Please try again."); // Toast for error
         }
+        setLoading(false);
     };
 
-    // Fetch all team members
     const fetchTeamMembers = async () => {
+        setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4400/team/${teamCode}`, {
+            const response = await axios.get(`https://task-bridge-eyh5.onrender.com/team/${teamCode}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setTeamMembers(response.data);
         } catch (error) {
             console.error("Error fetching team members:", error);
+            toast.error("Failed to fetch team members. Please try again."); // Toast for error
         }
+        setLoading(false);
     };
 
     const handleChange = (e) => {
         setNewTask({ ...newTask, [e.target.name]: e.target.value });
     };
-
 
     const handleMemberSelection = (memberId) => {
         setNewTask(prevState => {
@@ -62,117 +68,119 @@ const Task = () => {
         });
     };
 
-
-    // Handle commit type selection
     const handleCommitChange = (taskId, type) => {
         setSelectedCommitType(prev => ({ ...prev, [taskId]: type }));
         if (type !== "commented") {
-            setCommentText(prev => ({ ...prev, [taskId]: "" })); // Clear comment text if not 'commented'
+            setCommentText(prev => ({ ...prev, [taskId]: "" }));
         }
     };
 
-    // Handle commit submission
     const handleCommit = async (taskId) => {
-        console.log(user)
         if (!user || !user.full_name) {
-            alert("User data is not available. Please log in again.");
+            toast.error("User data is not available. Please log in again."); // Toast for error
             return;
         }
-    
+
         const commitType = selectedCommitType[taskId] || "started";
         const text = commentText[taskId]?.trim() || `Marked as ${commitType}`;
-    
+        const activity = commentText[taskId]?.trim() || `Marked as ${commitType}`;
+
         if (!text) {
-            alert("Commit text cannot be empty!");
+            toast.error("Commit text cannot be empty!"); // Toast for error
             return;
         }
-    
+
+        setLoading(true);
         try {
             const response = await axios.post(
-                `http://localhost:4400/task/${taskId}/comments`,
+                `https://task-bridge-eyh5.onrender.com/task/${taskId}/comments`,
                 {
                     type: commitType,
-                    text,
-                    user: user.full_name, // Now only runs if user exists
+                    activity,
                 },
                 { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
             );
-    
+
             if (response.status === 200 || response.status === 201) {
-                alert("Commit added successfully!");
-                fetchTasks(); // Refresh task list
+                toast.success(`Commit of ${commitType} added successfully!`); // Toast for success
+                fetchTasks();
             } else {
-                alert("Failed to add commit.");
+                toast.error(`Failed to add commit of ${commitType}.`); // Toast for error
             }
         } catch (error) {
             console.error("Error adding commit:", error.response?.data || error.message);
-            alert(`Error updating commit: ${error.response?.data?.message || "Please try again."}`);
+            toast.error(`Error updating commit: ${error.response?.data?.message || "Please try again."}`); // Toast for error
         }
-    };
-    
-    // Format date function (this was referenced but not defined in the original code)
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleString();
+        setLoading(false);
     };
 
-    // Handle task submission
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    };
+
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page reload
-    
+        e.preventDefault();
+
         if (!newTask.title.trim() || !newTask.description.trim()) {
-            alert("Task title and description are required!");
+            toast.error("Task title and description are required!"); // Toast for error
             return;
         }
-    
+
         setLoading(true);
-    
+
         try {
             const response = await axios.post(
-                `http://localhost:4400/task`,
+                `https://task-bridge-eyh5.onrender.com/task`,
                 {
                     team_code: teamCode,
                     title: newTask.title.trim(),
                     description: newTask.description.trim(),
                     priority: newTask.priority,
                     label: newTask.label.trim(),
-                    date: new Date(newTask.date).toISOString(), // Ensure correct date format
-                    assignedMembers: newTask.assignedMembers, // Fix key name
+                    date: new Date(newTask.date).toISOString(),
+                    assignedMembers: newTask.assignedMembers,
                 },
                 { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
             );
-    
+
             if (response.status === 201) {
-                alert("Task added successfully!");
-                fetchTasks(); // Refresh the task list
-                setNewTask({ title: "", description: "", priority: "normal", label: "", assignedMembers: [], date: "" }); // Clear form
+                toast.success("Task added successfully!"); // Toast for success
+                fetchTasks();
+                setNewTask({ title: "", description: "", priority: "normal", label: "", assignedMembers: [], date: "" });
             } else {
-                alert("Failed to add task.");
+                toast.error("Failed to add task."); // Toast for error
             }
         } catch (error) {
             console.error("Error adding task:", error.response?.data || error.message);
-            alert(`Error adding task: ${error.response?.data?.message || "Please try again."}`);
+            toast.error(`Error adding task: ${error.response?.data?.message || "Please try again."}`); // Toast for error
         } finally {
             setLoading(false);
         }
     };
-    
 
     const handleDelete = async (taskId) => {
+        setLoading(true);
         try {
-            await axios.delete(`http://localhost:4400/task/delete/${taskId}`, {
+            await axios.delete(`https://task-bridge-eyh5.onrender.com/task/delete/${taskId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            toast.success("Task deleted successfully!"); // Toast for success
             fetchTasks();
         } catch (error) {
             console.error('Error deleting task:', error);
+            toast.error("Failed to delete task. Please try again."); // Toast for error
         }
+        setLoading(false);
     };
 
-            
     const handleStageUpdate = async (taskId, newStage) => {
+        setLoading(true);
         try {
-            await axios.patch(`http://localhost:4400/task/${taskId}`, { stage: newStage }, {
+            await axios.patch(`https://task-bridge-eyh5.onrender.com/task/${taskId}`, { stage: newStage }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTasks(prevTasks =>
@@ -180,13 +188,22 @@ const Task = () => {
                     task._id === taskId ? { ...task, stage: newStage } : task
                 )
             );
+            toast.success(`Task stage updated successfully to ${newStage}!`); // Toast for success
         } catch (error) {
             console.error('Error updating task stage:', error);
+            toast.error("Failed to update task stage. Please try again."); // Toast for error
         }
+        setLoading(false);
     };
 
     return (
         <div className="task-details-container">
+            <Link className="home-btn1" to='/home'>
+                Home
+            </Link>
+            {loading && <TeamLoader />}
+            <ToastContainer /> {/* Add ToastContainer to render toasts */}
+
             <div className="task-details-header">
                 <h2>Task Management</h2>
             </div>
@@ -283,6 +300,14 @@ const Task = () => {
                 </form>
             )}
 
+            <div className="lable-indicator"> 
+                Status 
+                <div className="lable-circle lable-todo">todo</div>
+                <div className="lable-circle lable-progress">in progress</div>
+                <div className="lable-circle lable-review">Review</div>
+                <div className="lable-circle lable-done">Done</div>
+            </div>
+
             <div className="task-list">
                 {tasks.length > 0 ? tasks.map((task) => (
                     <div 
@@ -291,7 +316,7 @@ const Task = () => {
                         data-status={task.stage}
                     >
                         <div className="task-header">
-                            <h3 className="task-title">{task.title}</h3>
+                            <h2 className="task-title1">{task.title}</h2>
                             <div className="task-badges">
                                 <span className={`priority-badge ${task.priority}`}>
                                     {task.priority}
@@ -303,7 +328,7 @@ const Task = () => {
                         <div className="task-body">
                             <p className="task-description">{task.description}</p>
                             <div className="task-meta">
-                                <p><strong>Due Date:</strong> {formatDate(task.date)}</p>
+                                <p className="gap-margin"><strong>Due Date:</strong> {formatDate(task.date)}</p>
                                 <div className="task-status">
                                     <strong>Status:</strong>
                                     <select 

@@ -10,6 +10,7 @@
 }
 
 .task-details-header h2 {
+    margin-top: 15px;
     color: #333;
     font-size: 24px;
     font-weight: 600;
@@ -112,10 +113,10 @@
     margin-bottom: 15px;
 }
 
-.task-title {
-    margin: 0;
+.task-title1 {
+     margin: 0; 
     color: #333;
-    font-size: 18px;
+    font-size: x-large;
     font-weight: 600;
 }
 
@@ -403,4 +404,53 @@
 .form-label{
     font-weight: 600;
     
+}
+.home-btn1 {
+    
+    /* margin: 10px; */
+    text-decoration: none;
+    padding: 8px 16px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  .lable-indicator{
+    display: flex;
+    column-gap: 20px;
+    font-size: larger;
+    font-weight: 600;
+    margin: 20px;
+  }
+
+  .lable-circle{
+    text-align: center;
+    color: white;
+    font-size: medium;
+    font-weight: 300;
+    height: 20px;
+    width: 200px;
+    border-radius: 20px;
+  }
+  .lable-todo{
+    background-color: #9E9E9E;
+  }
+  .lable-review{
+    background-color: #2196F3;
+  }
+  .lable-progress{
+    background-color: #FFD700;
+  }
+  .lable-done{
+    background-color: #4CAF50;
+  }
+.gap-margin {
+    margin-top: 10px;
+}
+.task-status{
+    margin-top: 10px;
 }

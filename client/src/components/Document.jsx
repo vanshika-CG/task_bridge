@@ -1,40 +1,44 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../style/Document.css';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../Ui/Enter';
 
 const Document = () => {
   const [files, setFiles] = useState([]);
   const [folders, setFolders] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState(null);
-  const [newFolderName, setNewFolderName] = useState('');
-  const [showNewFolderModal, setShowNewFolderModal] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState(null);
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [selectedFolderFiles, setSelectedFolderFiles] = useState(null);
-  const navigate = useNavigate();
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedFileId, setSelectedFileId] = useState(null);
 
-  const team_code = sessionStorage.getItem('team_code'); // Get from auth context
-  console.log(team_code);
-  // const team_code = "team@123"
-  const token = sessionStorage.getItem('token'); // Get from auth context
-  // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzljNTQ3ZDdlZGU3MWZhYTlkY2UyYjgiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6InByaXltYXZhbmlAZ21haWwuY29tIiwiaWF0IjoxNzM4Nzg3MDkwLCJleHAiOjE3MzkyMTkwOTB9.rEc1Jmf5UqD9oupzPI79lDONdpETSkDao8cG-_Cmf0A"
-  console.log(token);
-  
+  const navigate = useNavigate();
+  const team_code = sessionStorage.getItem('team_code');
+  console.log(team_code)
+  const token = sessionStorage.getItem('token');
+
   // API Configuration
   const api = axios.create({
-    baseURL: 'https://task-bridge-eyh5.onrender.com/file',
+    baseURL: 'http://task-bridge-eyh5.onrender.com/file',
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-  // Fetch folders and documents
+  // Fetch folders, documents, and team members
   useEffect(() => {
     fetchFolders();
     fetchDocuments();
+    fetchTeamMembers();
   }, []);
 
   const fetchFolders = async () => {
@@ -43,6 +47,7 @@ const Document = () => {
       setFolders(response.data);
     } catch (err) {
       setError('Error fetching folders');
+      toast.error('Error fetching folders');
       console.error(err);
     }
   };
@@ -53,25 +58,22 @@ const Document = () => {
       setFiles(response.data);
     } catch (err) {
       setError('Error fetching documents');
+      toast.error('Error fetching documents');
       console.error(err);
     }
   };
 
-  // Create new folder
-  const handleCreateFolder = async (e) => {
-    e.preventDefault();
+  const fetchTeamMembers = async () => {
     try {
-      const response = await api.post('/folder', {
-        name: newFolderName,
-        team_code,
-        parent_folder: currentFolder
-      });
-      setFolders([...folders, response.data]);
-      setShowNewFolderModal(false);
-      setNewFolderName('');
+      const response = await axios.get(`https://task-bridge-eyh5.onrender.com/team/${team_code}`);
+      if (response.data && Array.isArray(response.data)) {
+        setTeamMembers(response.data);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (err) {
-      setError('Error creating folder');
-      console.error(err);
+      console.error('Error fetching team members:', err);
+      // toast.error('Failed to fetch team members. Please try again.');
     }
   };
 
@@ -87,44 +89,82 @@ const Document = () => {
       formData.append('folder_id', currentFolder);
     }
 
-    setLoading(true);
+    setIsUploading(true);
     try {
       const response = await api.post('/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
+
+      // Ensure `uploaded_by` is included in the response
+      if (!response.data.uploaded_by) {
+        throw new Error('Uploaded by information missing in response');
+      }
+
       setFiles([...files, response.data]);
-      setLoading(false);
+      toast.success('File uploaded successfully!');
     } catch (err) {
-      setError('Error uploading file');
-      setLoading(false);
-      console.error(err);
+      console.error('Error uploading file:', err);
+      toast.error(err.response?.data?.message || 'Error uploading file');
+    } finally {
+      fetchDocuments();
+      setIsUploading(false);
     }
   };
 
   // Delete document
   const handleDelete = async (id) => {
-    try {
-      await api.delete(`/${id}`);
-      setFiles(files.filter(file => file._id !== id));
-    } catch (err) {
-      setError('Error deleting document');
-      console.error(err);
+    if (window.confirm('Are you sure you want to delete this file?')) {
+      setIsDeleting(true);
+      try {
+        await api.delete(`/${id}`);
+        setFiles(files.filter((file) => file._id !== id));
+        toast.success('File deleted successfully!');
+      } catch (err) {
+        setError('Error deleting document');
+        toast.error(err.response?.data?.message || 'Error deleting document');
+        console.error(err);
+      } finally {
+        setIsDeleting(false);
+      }
     }
   };
 
-  // Share document
-  const handleShare = async (id, userId) => {
+  // Open share modal and set selected file
+  const openShareModal = (fileId) => {
+    setSelectedFileId(fileId);
+    setShowShareModal(true);
+  };
+
+  // Handle sharing a file
+  const handleShare = async () => {
+    if (!selectedMember) {
+      toast.error('Please select a team member!');
+      return;
+    }
+
+    setIsSharing(true);
     try {
-      const response = await api.post(`/${id}/share`, { user_id: userId });
-      const updatedFiles = files.map(file => 
-        file._id === id ? response.data : file
+      const response = await api.post(`/${selectedFileId}/share`, 
+        { user_id: selectedMember }, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
-      setFiles(updatedFiles);
+
+      setFiles(files.map((file) => (file._id === selectedFileId ? response.data : file)));
+      toast.success('File shared successfully!');
+      setShowShareModal(false);
     } catch (err) {
-      setError('Error sharing document');
-      console.error(err);
+      console.error('Error sharing document:', err);
+      toast.error(err.response?.data?.message || 'Error sharing document');
+    } finally {
+      fetchDocuments();
+      setIsSharing(false);
     }
   };
 
@@ -137,15 +177,13 @@ const Document = () => {
         </button>
         <h1>Document Management</h1>
         <div className="header-actions">
-          <button onClick={() => setShowNewFolderModal(true)}>
-            Create Folder
-          </button>
           <label className="upload-button">
-            Upload File
+            {isUploading ? <Loader /> : 'Upload File'}
             <input
               type="file"
               onChange={handleFileUpload}
               style={{ display: 'none' }}
+              disabled={isUploading}
             />
           </label>
         </div>
@@ -154,16 +192,12 @@ const Document = () => {
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
 
-      {/* Loading Indicator */}
-      {loading && <div className="loading">Uploading...</div>}
-
       {/* Folder Structure */}
       <div className="folder-structure">
-        <h2>Folders</h2>
         <div className="folders-grid">
-          {folders.map(folder => (
-            <div 
-              key={folder._id} 
+          {folders.map((folder) => (
+            <div
+              key={folder._id}
               className="folder-card"
               onClick={() => setCurrentFolder(folder._id)}
             >
@@ -190,7 +224,7 @@ const Document = () => {
             </tr>
           </thead>
           <tbody>
-            {files.map(file => (
+            {files.map((file) => (
               <tr key={file._id}>
                 <td>
                   <a href={file.url} target="_blank" rel="noopener noreferrer">
@@ -198,15 +232,15 @@ const Document = () => {
                   </a>
                 </td>
                 <td>{(file.size / 1024).toFixed(2)} KB</td>
-                <td>{file.uploaded_by.full_name}</td>
+                <td>
+                  {file.uploaded_by?.full_name } {/* Fallback to 'Unknown' if name is missing */}
+                </td>
                 <td>
                   <div className="file-actions">
-                    <button onClick={() => handleDelete(file._id)}>
-                      Delete
+                    <button onClick={() => handleDelete(file._id)} disabled={isDeleting}>
+                      {isDeleting ? <Loader /> : 'Delete'}
                     </button>
-                    <button onClick={() => handleShare(file._id, 'user_id')}>
-                      Share
-                    </button>
+                    <button onClick={() => openShareModal(file._id)}>Share</button>
                   </div>
                 </td>
               </tr>
@@ -215,34 +249,40 @@ const Document = () => {
         </table>
       </div>
 
-      {/* New Folder Modal */}
-      {showNewFolderModal && (
+      {/* Share Modal */}
+      {showShareModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Create New Folder</h3>
-            <form onSubmit={handleCreateFolder}>
-              <input
-                type="text"
-                value={newFolderName}
-                onChange={(e) => setNewFolderName(e.target.value)}
-                placeholder="Folder Name"
-                required
-              />
-              <div className="modal-actions">
-                <button type="submit">Create</button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowNewFolderModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            <h3>Select a Team Member to Share</h3>
+            <select onChange={(e) => setSelectedMember(e.target.value)} defaultValue="">
+  <option value="" disabled>Select Member</option>
+  {teamMembers
+    .filter(member => 
+      member._id !== files.find(file => file._id === selectedFileId)?.uploaded_by?._id &&  // Exclude uploader
+      !files.find(file => file._id === selectedFileId)?.shared_with?.includes(member._id) // Exclude shared members
+    )
+    .map((member) => (
+      <option key={member._id} value={member._id}>
+        {member.full_name}
+      </option>
+    ))}
+</select>
+
+            <div className="modal-actions">
+              <button onClick={handleShare} disabled={isSharing}>
+                {isSharing ? <Loader /> : 'Share'}
+              </button>
+              <button onClick={() => setShowShareModal(false)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 };
 
-export default Document; 
+export default Document;
+
