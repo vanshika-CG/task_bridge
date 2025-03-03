@@ -92,3 +92,49 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+
+
+// Import members from CSV
+exports.importMembers = async (req, res) => {
+    console.log('Request Body:', req.body); // Log the incoming request body
+    const { team_code, members } = req.body;
+  
+    try {
+      // Validate input
+      if (!team_code || !Array.isArray(members)) {
+        return res.status(400).json({ success: false, message: 'Invalid input' });
+      }
+  
+      // Process each member
+      const savedMembers = await Promise.all(
+        members.map(async (member) => {
+          // Hash the password before saving
+          const hashedPassword = await bcrypt.hash(member.password, 10);
+  
+          // Create a new user
+          const newUser = new User({
+            team_code,
+            full_name: member.full_name,
+            title: member.title,
+            email: member.email,
+            role: member.role,
+            password: hashedPassword,
+          });
+  
+          // Save the user to the database
+          return await newUser.save();
+        })
+      );
+      
+      res.status(200).json({ success: true, message: 'Members imported successfully', data: savedMembers });
+    } catch (error) {
+      console.error('Error importing members:', error);
+  
+      // Handle duplicate email error
+      if (error.code === 11000) {
+        return res.status(409).json({ success: false, message: 'A user with this email already exists' });
+      }
+  
+      res.status(500).json({ success: false, message: 'Failed to import members' });
+    }
+  };
