@@ -88,6 +88,7 @@
 }
 
 .edit-btn {
+  font-size:medium;
   color: #3b82f6;
   background: none;
   border: none;
@@ -99,6 +100,7 @@
 }
 
 .delete-btn {
+  font-size:medium;
   color: #ef4444;
   background: none;
   border: none;
@@ -220,4 +222,93 @@
 
 .home-btn:hover {
   background-color: #357abd;
+}
+
+
+/* Export Modal Overlay */
+.export-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Export Modal */
+.export-modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  text-align: center;
+}
+
+.export-modal h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.export-modal p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Input Field */
+.export-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.export-input:focus {
+  border-color: #007bff;
+}
+
+/* Modal Buttons */
+.export-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.export-cancel-btn,
+.export-confirm-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.export-cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.export-cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.export-confirm-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.export-confirm-btn:hover {
+  background-color: #0056b3;
 }
