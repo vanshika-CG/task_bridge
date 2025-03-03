@@ -10,7 +10,6 @@ import profile from '../assets/home_/profile_i.png';
 import { mkConfig, generateCsv, download } from 'export-to-csv'; // For CSV export
 import '../style/TeamMembers.css';
 
-
 const TeamMembers = () => {
   const team_code = sessionStorage.getItem('team_code')?.replace(/['"]+/g, '');
   const token = sessionStorage.getItem('token');
@@ -32,8 +31,8 @@ const TeamMembers = () => {
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [isFormatModalOpen, setIsFormatModalOpen] = useState(false); // For file format modal
-  const [isExportModalOpen, setIsExportModalOpen] = useState(false); // State for export modal
-  const [fileName, setFileName] = useState(''); // State for file name input
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false); // For export modal
+  const [fileName, setFileName] = useState(''); // For export file name
 
   // CSV Export Configuration
   const csvConfig = mkConfig({
@@ -52,7 +51,7 @@ const TeamMembers = () => {
 
       setLoading(true);
       try {
-        const response = await axios.get(`https://task-bridge-eyh5.onrender.com/team/${team_code}`, {
+        const response = await axios.get(`http://localhost:4400/team/${team_code}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -80,6 +79,16 @@ const TeamMembers = () => {
 
   // Handle Export to CSV
   const handleExportData = () => {
+    setIsExportModalOpen(true); // Open the custom modal
+  };
+
+  // Handle Export Confirmation
+  const handleExportConfirm = () => {
+    if (!fileName) {
+      toast.error('Please enter a file name');
+      return;
+    }
+
     const filteredData = members.map((member) => ({
       full_name: member.full_name,
       title: member.title,
@@ -88,21 +97,18 @@ const TeamMembers = () => {
     }));
 
     const csv = generateCsv(csvConfig)(filteredData);
-    const fileName = prompt('Enter a file name for the CSV file:', 'team_members');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
-    if (fileName) {
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${fileName}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } else {
-      toast.info('File export canceled.');
-    }
+    setIsExportModalOpen(false); // Close the modal
+    setFileName(''); // Reset the file name input
   };
 
   // Handle Import from CSV
@@ -134,7 +140,7 @@ const TeamMembers = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          'https://task-bridge-eyh5.onrender.com/team/import-members',
+          'http://localhost:4400/team/import-members',
           { team_code, members: data },
           {
             headers: {
@@ -146,7 +152,7 @@ const TeamMembers = () => {
 
         if (response.data.success) {
           toast.success('Members imported successfully!');
-          const updatedMembersResponse = await axios.get(`https://task-bridge-eyh5.onrender.com/team/${team_code}`, {
+          const updatedMembersResponse = await axios.get(`http://localhost:4400/team/${team_code}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
@@ -328,7 +334,8 @@ const TeamMembers = () => {
     []
   );
 
-  // Modal style
+
+      // Modal style
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -340,7 +347,6 @@ const TeamMembers = () => {
     p: 4,
     borderRadius: '8px',
   };
-
   return (
     <div className="container">
       <div className="header">
@@ -497,21 +503,19 @@ const TeamMembers = () => {
           <Typography variant="body1" gutterBottom>
             <p><strong>Required Fields:</strong></p>
             <ul>
-              <li>full_name</li>
-              <li>email</li>
-              <li>role (admin/member)</li>
-              <li>password</li>
+              <li>Full Name</li>
+              <li>Email</li>
+              <li>Role (admin/member)</li>
             </ul>
             <p><strong>Optional Fields:</strong></p>
             <ul>
-              <li>title</li>
+              <li>Title</li>
             </ul>
-            <p style={{color:"red"}}>Note : Fields are Case Sensitive</p>
           </Typography>
           <Typography variant="body1" gutterBottom>
             <a
-              href="/team_members1.csv"
-              download="example.csv"
+              href="/example_team_members.csv"
+              download="example_team_members.csv"
               style={{ color: 'primary', textDecoration: 'underline' }}
             >
               Download Example CSV
@@ -527,6 +531,37 @@ const TeamMembers = () => {
           </Button>
         </Box>
       </Modal>
+
+      {/* Export File Name Modal */}
+      {isExportModalOpen && (
+        <div className="export-modal-overlay">
+          <div className="export-modal">
+            <h3>Export Team Members</h3>
+            <p>Enter a name for the exported CSV file:</p>
+            <input
+              type="text"
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              placeholder="File Name"
+              className="export-input"
+            />
+            <div className="export-modal-buttons">
+              <button
+                className="export-cancel-btn"
+                onClick={() => setIsExportModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="export-confirm-btn"
+                onClick={handleExportConfirm}
+              >
+                Export
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
