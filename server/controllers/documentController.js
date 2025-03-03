@@ -73,14 +73,45 @@ exports.deleteDocument = async (req, res) => {
     }
   };
 
-exports.shareDocument = async (req, res) => {
-  try {
-    const document = await Document.findById(req.params.id);
-    document.shared_with.push(req.body.user_id);
-    await document.save();
-    
-    res.status(200).json(document);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}; 
+
+
+  const mongoose = require("mongoose");
+
+  exports.shareDocument = async (req, res) => {
+    try {
+      const { id } = req.params; // Document ID
+      const { user_id } = req.body; // User ID from request
+  
+      // Validate user_id is present
+      if (!user_id) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+  
+      // Validate user_id format
+      if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(400).json({ message: "Invalid User ID format" });
+      }
+  
+      // Convert user_id to ObjectId
+      const userObjectId = new mongoose.Types.ObjectId(user_id);
+  
+      const document = await Document.findById(id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+  
+      // Prevent duplicate sharing
+      if (!document.shared_with.includes(userObjectId)) {
+        document.shared_with.push(userObjectId);
+        await document.save();
+      } else {
+        return res.status(200).json({ message: "User already has access", document });
+      }
+  
+      res.status(200).json(document);
+    } catch (error) {
+      console.error("Error sharing document:", error);
+      res.status(500).json({ message: "Server error", error });
+    }
+  };
+  
