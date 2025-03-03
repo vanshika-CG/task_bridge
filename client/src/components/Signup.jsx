@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../style/Signup.css';
 import home_i from '../assets/home_i.png';
 import logo from '../assets/Logo.png';
@@ -15,6 +17,7 @@ const Signup = () => {
         password: '',
     });
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false); // Loader state
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -23,12 +26,19 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Show loader
+
         try {
             const response = await axios.post('https://task-bridge-eyh5.onrender.com/auth/signup', formData);
             setMessage(response.data.message);
+            toast.success(response.data.message); // Show success toast
             navigate('/login'); // Redirect to login after successful signup
         } catch (error) {
-            setMessage(error.response?.data?.message || 'Error during signup');
+            const errorMessage = error.response?.data?.message || 'Error during signup';
+            setMessage(errorMessage);
+            toast.error(errorMessage); // Show error toast
+        } finally {
+            setLoading(false); // Hide loader
         }
     };
 
@@ -50,8 +60,8 @@ const Signup = () => {
                                 type="radio" 
                                 id="admin" 
                                 name="role" 
-                                value="Admin"
-                                checked={formData.role === 'Admin'}
+                                value="admin"
+                                checked={formData.role === 'admin'}
                                 onChange={handleChange}
                             />
                             <label htmlFor="admin">Admin</label>
@@ -114,8 +124,8 @@ const Signup = () => {
                             onChange={handleChange}
                         />
 
-                        <button type="submit" className="signup-button">
-                            Sign - Up
+                        <button type="submit" className="signup-button" disabled={loading}>
+                            {loading ? 'Loading...' : 'Sign - Up'}
                         </button>
                     </form>
 
@@ -126,6 +136,19 @@ const Signup = () => {
             <div className="signup-right">
                 <img src={home_i} alt="Team Collaboration" />
             </div>
+
+            {/* Toast Container */}
+            <ToastContainer 
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </div>
     );
 };
