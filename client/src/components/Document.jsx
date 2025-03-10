@@ -28,7 +28,7 @@ const Document = () => {
 
   // API Configuration
   const api = axios.create({
-    baseURL: 'http://task-bridge-eyh5.onrender.com/file',
+    baseURL: 'http://localhost:4400/file',
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -36,30 +36,40 @@ const Document = () => {
 
   // Fetch folders, documents, and team members
   useEffect(() => {
-    fetchFolders();
+    // fetchFolders();
     fetchDocuments();
     fetchTeamMembers();
   }, []);
 
-  const fetchFolders = async () => {
-    try {
-      const response = await api.get(`/folder/${team_code}`);
-      setFolders(response.data);
-    } catch (err) {
-      setError('Error fetching folders');
-      toast.error('Error fetching folders');
-      console.error(err);
-    }
-  };
+  // const fetchFolders = async () => {
+  //   try {
+  //     const response = await api.get(`/folder/${team_code}`);
+  //     setFolders(response.data);
+  //   } catch (err) {
+  //     setError('Error fetching folders');
+  //     toast.error('Error fetching folders');
+  //     console.error(err);
+  //   }
+  // };
 
   const fetchDocuments = async () => {
     try {
       const response = await api.get(`/team/${team_code}`);
-      setFiles(response.data);
+      console.log('API Response:', response.data); // Debugging: Log the response
+  
+      // Ensure the response data is an array
+      if (Array.isArray(response.data)) {
+        setFiles(response.data);
+      } else {
+        throw new Error('Invalid response format: Expected an array');
+      }
     } catch (err) {
       setError('Error fetching documents');
       toast.error('Error fetching documents');
-      console.error(err);
+      console.error('Error details:', err.response?.data || err.message);
+  
+      // Reset files to an empty array in case of error
+      setFiles([]);
     }
   };
 
