@@ -8,6 +8,8 @@ import TeamMembers from './components/TeamMembers';
 import MainHome from './components/MainHome';
 import Document from './components/Document';
 
+import Meeting from "./components/Meeting";
+
 
 import './App.css';
 import Task from './components/Task';
@@ -65,6 +67,10 @@ function App() {
 
           {/* Default Route (Landing Page) */}
           <Route path="/" element={<Home />} />
+          <Route path="/meeting" element={<Meeting />} />
+
+
+
         </Routes>
       </div>
     </Router>

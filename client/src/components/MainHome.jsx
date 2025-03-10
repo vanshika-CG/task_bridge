@@ -21,7 +21,7 @@ const MainHome = () => {
       id: 2,
       title: "Video Conferencing",
       icon: "🎥",
-      path: "/video",
+      path: "/meeting",
       className: "orange"
     },
     {
