@@ -1,5 +1,4 @@
-
-import Pattern from '../Ui/Pattern'; // Import the Pattern component
+import Pattern from '../Ui/Pattern';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
@@ -11,11 +10,8 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      {/* Add the Pattern component as the background */}
       <Pattern />
-
       <HomeContent>
-        {/* Section 1: Hero Section */}
         <HeroSection>
           <HeroText>
             <AnimatedLogo src={logo} alt="Task Bridge Logo" className="logo" />
@@ -28,6 +24,9 @@ const Home = () => {
               <CreateTeamButton onClick={() => navigate('/signup')}>
                 <span className="icon">⊕</span> Create Team
               </CreateTeamButton>
+              <WhiteboardButton onClick={() => navigate('/whiteboard')}>
+                <span className="icon">🎨</span> Open Whiteboard
+              </WhiteboardButton>
             </ButtonGroup>
           </HeroText>
           <HeroImage>
@@ -35,7 +34,6 @@ const Home = () => {
           </HeroImage>
         </HeroSection>
 
-        {/* Section 2: About Task Bridge */}
         <AboutSection>
           <SectionTitle>What is Task Bridge?</SectionTitle>
           <SectionText>
@@ -43,7 +41,6 @@ const Home = () => {
           </SectionText>
         </AboutSection>
 
-        {/* Section 3: Features */}
         <FeaturesSection>
           <SectionTitle>Key Features</SectionTitle>
           <FeaturesGrid>
@@ -63,14 +60,13 @@ const Home = () => {
               <FeatureText>Upload, share, and manage files effortlessly.</FeatureText>
             </FeatureCard>
             <FeatureCard>
-              <FeatureIcon>📊</FeatureIcon>
-              <FeatureTitle>Progress Tracking</FeatureTitle>
-              <FeatureText>Monitor project progress with detailed analytics.</FeatureText>
+              <FeatureIcon>🎨</FeatureIcon>
+              <FeatureTitle>Virtual Whiteboard</FeatureTitle>
+              <FeatureText>Collaborate visually with an interactive whiteboard.</FeatureText>
             </FeatureCard>
           </FeaturesGrid>
         </FeaturesSection>
 
-        {/* Section 4: Testimonials */}
         <TestimonialsSection>
           <SectionTitle>What Our Users Say</SectionTitle>
           <TestimonialsGrid>
@@ -85,7 +81,6 @@ const Home = () => {
           </TestimonialsGrid>
         </TestimonialsSection>
 
-        {/* Section 5: Call to Action */}
         <CtaSection>
           <SectionTitle>Ready to Get Started?</SectionTitle>
           <SectionText>Join Task Bridge today and take your team collaboration to the next level.</SectionText>
@@ -103,9 +98,6 @@ const Home = () => {
   );
 };
 
-export default Home;
-
-// Animations
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -129,7 +121,6 @@ const float = keyframes`
   }
 `;
 
-// Styled Components
 const HomeContainer = styled.div`
   position: relative;
   min-height: 100vh;
@@ -138,7 +129,7 @@ const HomeContainer = styled.div`
 
 const HomeContent = styled.div`
   position: relative;
-  z-index: 1; /* Ensure content is above the background */
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
@@ -156,16 +147,16 @@ const HeroText = styled.div`
 `;
 
 const AnimatedLogo = styled.img`
-margin-top:-80px;
+  margin-top: -80px;
   width: 80px;
-  height:auto;
+  height: auto;
   margin-bottom: 1rem;
   animation: ${float} 3s ease-in-out infinite;
 `;
 
 const AnimatedTitle = styled.h1`
   font-size: 3rem;
-  color:rgb(101, 131, 252); /* Light blue for the title */
+  color: rgb(101, 131, 252);
   margin-bottom: 1rem;
   animation: ${fadeIn} 1s ease-in-out;
 `;
@@ -181,12 +172,12 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
-  justify-content:center;
+  justify-content: center;
 `;
 
 const JoinTeamButton = styled.button`
   padding: 0.8rem 1.5rem;
-  background:rgb(137, 159, 246); /* Light blue */
+  background: rgb(137, 159, 246);
   color: white;
   border: none;
   border-radius: 8px;
@@ -196,15 +187,15 @@ const JoinTeamButton = styled.button`
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(184, 198, 255, 0.3); /* Light blue shadow */
+    box-shadow: 0 10px 20px rgba(184, 198, 255, 0.3);
   }
 `;
 
 const CreateTeamButton = styled.button`
   padding: 0.8rem 1.5rem;
-  background:#E3D2FC;
-  color:rgb(39, 45, 71); /* Light blue */
-  border: 2px solid #b8c6ff; /* Light blue border */
+  background: #E3D2FC;
+  color: rgb(39, 45, 71);
+  border: 2px solid #b8c6ff;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
@@ -212,7 +203,23 @@ const CreateTeamButton = styled.button`
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(184, 198, 255, 0.3); /* Light blue shadow */
+    box-shadow: 0 10px 20px rgba(184, 198, 255, 0.3);
+  }
+`;
+
+const WhiteboardButton = styled.button`
+  padding: 0.8rem 1.5rem;
+  background: #FFE5E5;
+  color: #FF4444;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 68, 68, 0.2);
   }
 `;
 
@@ -232,7 +239,7 @@ const AboutSection = styled.section`
 
 const SectionTitle = styled.h2`
   font-size: 2rem;
-  color:rgb(120, 130, 243); /* Light blue */
+  color: rgb(120, 130, 243);
   margin-bottom: 1rem;
   animation: ${fadeIn} 1s ease-in-out;
 `;
@@ -257,7 +264,7 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div`
-  background:rgb(255, 255, 255);
+  background: rgb(255, 255, 255);
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -265,7 +272,7 @@ const FeatureCard = styled.div`
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(184, 198, 255, 0.2); /* Light blue shadow */
+    box-shadow: 0 20px 40px rgba(184, 198, 255, 0.2);
   }
 `;
 
@@ -276,7 +283,7 @@ const FeatureIcon = styled.div`
 
 const FeatureTitle = styled.h3`
   font-size: 1.5rem;
-  color: #b8c6ff; /* Light blue */
+  color: #b8c6ff;
   margin-bottom: 1rem;
 `;
 
@@ -305,7 +312,7 @@ const TestimonialCard = styled.div`
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(184, 198, 255, 0.2); /* Light blue shadow */
+    box-shadow: 0 20px 40px rgba(184, 198, 255, 0.2);
   }
 `;
 
@@ -317,7 +324,7 @@ const TestimonialText = styled.p`
 
 const TestimonialAuthor = styled.p`
   font-weight: bold;
-  color: #b8c6ff; /* Light blue */
+  color: #b8c6ff;
 `;
 
 const CtaSection = styled.section`
@@ -325,3 +332,4 @@ const CtaSection = styled.section`
   text-align: center;
 `;
 
+export default Home;
