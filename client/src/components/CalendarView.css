@@ -1,0 +1,383 @@
+/* CalendarView.css - Beautiful and Modern Calendar UI */
+
+/* Main Container Styling */
+.calendar-container {
+    background: linear-gradient(to bottom right, #fafbfd, #f0f4f8);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin: 20px auto;
+    max-width: 1200px;
+    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+    position: relative; /* For loading overlay */
+  }
+  
+  /* Loading Overlay */
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 16px;
+  }
+  
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .loading-overlay p {
+    margin-top: 10px;
+    color: #4a5568;
+    font-weight: 500;
+  }
+  
+  /* Enhanced pulse animation for overdue tasks */
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); }
+    70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+  
+  /* Improved filter buttons */
+  .filter-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 12px;
+    position: relative;
+    flex-wrap: wrap;
+  }
+  
+  .filter-buttons::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.8), transparent);
+  }
+  
+  .filter-buttons button {
+    background: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .filter-buttons button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    transition: height 0.2s ease;
+  }
+  
+  .filter-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .filter-buttons button:hover::before {
+    height: 10px;
+  }
+  
+  .filter-buttons button.active {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  
+  /* Calendar Customization */
+  .rbc-calendar {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .rbc-toolbar {
+    padding: 16px;
+    background: white;
+    border-bottom: 1px solid #f0f4f8;
+  }
+  
+  .rbc-toolbar button {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #4a5568;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .rbc-toolbar button:hover {
+    background: #f8fafc;
+    border-color: #cbd5e0;
+  }
+  
+  .rbc-toolbar button.rbc-active {
+    background: #ebf8ff;
+    color: #3182ce;
+    border-color: #bee3f8;
+  }
+  
+  .rbc-month-view,
+  .rbc-time-view,
+  .rbc-agenda-view {
+    border-radius: 0 0 12px 12px;
+  }
+  
+  .rbc-header {
+    background-color: #f8fafc;
+    padding: 12px;
+    font-weight: 600;
+    color: #4a5568;
+  }
+  
+  /* Date Cell Styling */
+  .rbc-date-cell {
+    text-align: center;
+    padding: 8px;
+    font-weight: 500;
+    position: "relative";
+    height: 100%;
+  }
+  
+  /* Date Cell Hover Effect */
+  .rbc-day-bg {
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .rbc-day-bg:hover {
+    background-color: rgba(237, 242, 247, 0.7);
+  }
+  
+  /* Enhanced today highlight */
+  .rbc-today {
+    position: relative;
+    background: rgba(191, 219, 254, 0.2) !important;
+  }
+  
+  .rbc-today::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    pointer-events: none;
+  }
+  
+  /* Enhanced Event Styling */
+  .rbc-event {
+    border-radius: 8px !important;
+    padding: 4px 8px !important;
+    margin: 2px 1px !important;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  .rbc-event:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+  }
+  
+  .rbc-event::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 1255, 0.3);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+  
+  /* Enhanced Custom Event Styling */
+  .custom-event {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    gap: 5px;
+  }
+  
+  .event-title {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Modal Styling */
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -46%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  .modal h3 {
+    font-size: 20px;
+    color: #2d3748;
+    margin-bottom: 16px;
+    font-weight: 700;
+    border-bottom: 2px solid #f0f4f8;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .modal p {
+    color: #4a5568;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+  }
+  
+  .event-date, .event-time, .event-priority, .event-status {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+  
+  .event-description {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 15px 0;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .modal button {
+    background: linear-gradient(135deg, #3182ce, #60a5fa);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 150px;
+  }
+  
+  .modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+  }
+  
+  /* Toast Notification Styling */
+  .Toastify__toast {
+    border-radius: 10px !important;
+    padding: 16px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .Toastify__toast--info {
+    background: linear-gradient(to right, #3182ce, #63b3ed) !important;
+  }
+  
+  .Toastify__toast--error {
+    background: linear-gradient(to right, #e53e3e, #fc8181) !important;
+  }
+  
+  .Toastify__toast-body {
+    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+    font-weight: 500;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .calendar-container {
+      padding: 16px;
+      margin: 10px;
+      border-radius: 12px;
+    }
+  
+    .filter-buttons button {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+  
+    .modal {
+      width: 95%;
+      padding: 15px;
+    }
+  
+    .modal h3 {
+      font-size: 18px;
+    }
+  
+    .modal p {
+      font-size: 13px;
+    }
+  }
